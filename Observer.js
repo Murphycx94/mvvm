@@ -43,17 +43,17 @@ Dep.prototype = {
 };
 
 function Watcher(vm, key, cb) {
-	this.cb    = cb
-	this.vm    = vm
-	this.key   = key
+	this.cb = cb
+	this.vm = vm
+	this.key = key
 	this.value = this.get()
 }
 
 Watcher.prototype = {
 	get() {
-		Dep.target  = this
-		const value = data[key]
-		Dep.target  = null
+		Dep.target = this
+		const value = data[key] // 触发observer的getter
+		Dep.target = null
 		return value
 	},
 	update() {
@@ -61,9 +61,9 @@ Watcher.prototype = {
 	},
 	run() {
 		const value = this.get()
-		const oldValue =  this.value
+		const oldValue = this.value
 		if (value !== oldValue) {
-			this.value   = oldValue
+			this.value = oldValue
 			this.cb.call(this.vm, value, oldValue)
 		}
 	}
@@ -90,6 +90,19 @@ Compile.prototype = {
 		}
 		return fragment
 	},
+	compileElement(node) {
+		if (node && node.nodeType === 1) {
+			console.log(node.tagName)
+		}
+		var text = node.textContent;
+		const reg = /\{\{(.*)\}\}/;
+		const len = node.childElementCount
+		let	child = node.firstElementChild
+		for (let i = 0; i < len; i++) {
+			this.compileElement(child)
+			// child = child.nextElementSibling
+		}
+	}
 }
 
 
